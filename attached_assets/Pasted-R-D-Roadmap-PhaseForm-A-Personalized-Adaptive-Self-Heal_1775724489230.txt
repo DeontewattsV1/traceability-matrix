@@ -1,0 +1,31 @@
+R&D Roadmap: PhaseForm – A Personalized Adaptive Self‑Healing Conductor
+
+Objective and Scope
+
+PhaseForm is conceived as a self‑healing conductor whose electrical behaviour can be reconfigured over time via secure, user‑specific over‑the‑air (OTA) updates.  The system combines a low‑loss, stretchable substrate, a tunable conductive network, embedded sensing/control electronics and a secure identity/OTA layer.  This roadmap outlines the main research tasks, control stack developments, failure‑mode analyses and milestone stages needed to bring such a device from concept to a working prototype.
+
+Materials Research Tasks
+
+1. Substrate and Conductor Development
+	•	Low‑loss viscoelastic composites – Explore PDMS‑based elastomers reinforced with multi‑walled carbon nanotubes and polyborosiloxane (PBS) networks.  Such composites achieve conductivities of 8–150 Ω·m, exceptional softness (G ≈ 1 MPa) and extremely low mechanical loss (tan δ ≈ 0.04) while retaining self‑healing ability ￼.
+	•	High‑conductivity multiphase blends – Investigate cocontinuous PEDOT:PSS‑elastomer blends that recover tensile properties within 120 s and electrical properties within 900 s after damage.  These materials reach conductivities up to 1.5 S cm⁻¹, withstand stresses > 4 MPa and recover from > 2000 % strain ￼.
+	•	Liquid‑metal droplet composites – Develop gallium–indium droplet composites embedded in silicone elastomer.  Upon damage, ruptured droplets form new conductive paths, allowing instantaneous re‑routing of current without manual intervention ￼.
+	•	Ferromagnetic and magnetoresistive layers – Evaluate FeAs/InAs superlattices and (In,Fe)As thin films as sensing or functional layers.  In FeAs/InAs superlattices the Curie temperature increases as the InAs spacer thickness decreases, and the structures exhibit magnetoresistance up to 500 % ￼; randomly doped (In,Fe)As shows n‑type ferromagnetism with T_C up to 120 K ￼.
+
+2. Encapsulation and Channel Fabrication
+	•	Pattern microchannels within the substrate for liquid‑metal conduction.  Use laser‑induced graphene (LIG) molds or lithography for precise geometry.
+	•	Explore surface treatments to minimise oxidation and unintended droplet sticking.  Ensure sealing to prevent leakage when the substrate tears.
+
+Control Stack Development
+
+1. Actuation and Sensing
+	•	Electrowetting actuation – Implement LIG electrodes beneath the liquid‑metal channels to move droplets via programmable continuous electrowetting.  Recent work showed that such platforms can manipulate droplets in 2D, implement logic gates and repair broken interconnects ￼.
+	•	Thermal and resistive heating – For larger gaps, apply local RF heating to liquefy the metal and promote capillary refill.  Combine with the self‑healing substrate’s closure behaviour to ensure safe refill.
+	•	Embedded sensors – Integrate resistance, strain and temperature sensors to detect damage, oxidation or improper reconfiguration.  Use an MCU (e.g., Cortex‑M0+) to monitor signals and execute locally stored configuration states.
+
+2. OTA and Security
+	•	Incremental OTA updates – Adopt segment‑based packets, deferred flash writes and checkpoint‑free resumption to minimise energy use and allow updates under intermittent power ￼.
+	•	Secure element (SE) – Use hardware SE for device‑unique keys.  Require ECDSA‑signed updates; reject unsigned or invalid packets.  Store user‑specific configuration data only in the SE and cloud; never embed personal data in physical layers.
+	•	Behavioural profiling – Develop an inference engine to convert user interaction patterns (grip, frequency usage, strain) into a recommended conductor state.  Generate small signed deltas rather than full reprogramming images.
+
+Failure Modes and Safety Measures
