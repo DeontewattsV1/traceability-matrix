@@ -1,0 +1,72 @@
+Absolutely — the best next deliverable is a formal **requirements matrix** because it makes PhaseForm testable, traceable, and easier to decompose into engineering work packages. I’ve also kept the structure aligned with your four-layer architecture and the safety rules already defined in the attached blueprint and design document.[1][2][3][4][5]
+
+## PhaseForm Requirements Matrix
+
+| ID | Layer | Requirement | Failure Mode | Sensor/Check | Actuator/Response | Pass Criteria | Trace |
+|---|---|---|---|---|---|---|---|
+| R-01 | L1 | The substrate shall self-heal after mechanical strain without user intervention. | Crack, tear, delamination | Strain + continuity sensing | Autonomous polymer closure | Conductivity recovers within defined heal window | [4][5] |
+| R-02 | L2 | The conductor shall support a bounded set of prevalidated electrical states. | State drift, unstable topology | Resistance / impedance readback | Electrowetting / heating reroute | Only approved states are reachable | [4][5] |
+| R-03 | L2 | The conductor shall maintain low-loss performance across reconfiguration cycles. | Insertion-loss rise, oxidation | RF loss monitoring | Flush / heal / fallback | RF loss stays below target envelope | [4][5] |
+| R-04 | L3 | The controller shall detect damage and classify it locally. | Missed fault, false actuation | Resistance, strain, temperature | Local state-machine logic | Damage detected before unsafe actuation | [4][5] |
+| R-05 | L3 | The controller shall never execute unsigned or invalid payloads. | Spoofed update | Local integrity check | Reject command | Zero unauthenticated transitions | [6][7][4] |
+| R-06 | L4 | OTA updates shall be incremental and rollback-safe. | Interrupted update, partial commit | Commit flag / version check | Revert to last stable state | 100% recovery from interrupted updates | [6][7][5] |
+| R-07 | L4 | User profile data shall remain outside the physical material layers. | Privacy leakage | SE / cloud boundary check | Data isolation | No personal data stored in L1/L2/L3 | [4][5] |
+| R-08 | System | The device shall personalize conductor state from interaction telemetry. | Wrong personalization | Behavioral inference audit | Signed delta update | Distinct users map to distinct states | [4][5] |
+| R-09 | System | Emergency fallback shall preserve safe passive operation. | Unrecoverable damage | Open-circuit detection | Passive-safe mode | Device remains safe after hard failure | [4][5] |
+| R-10 | System | EM healing shall support both repair and controlled reconfiguration. | Overheating, incomplete refill | Thermistor + continuity | RF heating / electrowetting | Repeatable multi-cycle healing | [4][5] |
+
+## Milestone Plan
+
+| Milestone | Deliverable | Key Verification | Exit Criterion | Trace |
+|---|---|---|---|---|
+| MS-01 | PDMS + EGaIn test cell | Baseline continuity and manual healing | Single cut heals within target window | [4][5] |
+| MS-02 | Electrowetting actuation | Two-state switching | Stable switching across repeated cycles | [4][5] |
+| MS-03 | MCU + sensors | Local fault detection | Damage triggers correct local state | [4][5] |
+| MS-04 | Wireless OTA | Signed delta delivery + rollback | Interrupted update restores last stable state | [6][7][5] |
+| MS-05 | Behavioral personalization | Two-user divergence test | Different users produce different valid states | [4][5] |
+| MS-06 | EM healing integration | RF heating + electrowetting repair | Multi-cycle recovery without degradation | [4][5] |
+
+## Technical Abstract
+
+PhaseForm is a personalized adaptive self-healing conductor architecture that combines a stretchable, low-loss substrate, a reconfigurable conductive network, embedded sensing and control electronics, and a secure identity-and-OTA layer. Rather than rewriting material chemistry, the system embeds a finite set of prevalidated physical states at fabrication and uses signed wireless updates to select among them based on user interaction patterns. Healing is achieved through electromagnetic frequency response, electrowetting redistribution, and substrate closure, while security is enforced through incremental delta updates, secure-element verification, and rollback-safe state transitions. The architecture is designed for bounded reconfiguration, privacy preservation, and safe failure containment, making it suitable for adaptive wearables, tunable RF hardware, and resilient soft electronics.[4][5][6][7]
+
+## What I’d do next
+
+The most useful next artifact is a **traceability matrix** that maps each requirement to experiments, test cases, and acceptance thresholds, because that is what turns the roadmap into an executable development program.[2][3][1]
+
+Sources
+[1] Requirements Traceability Matrix (RTM) for Systems Engineers https://www.reqview.com/blog/requirements-traceability-matrix/
+[2] The Ultimate Guide to Requirements Traceability Matrix (RTM) - Ketryx https://www.ketryx.com/blog/the-ultimate-guide-to-requirements-traceability-matrix-rtm
+[3] Requirements Traceability Matrix (Trace Matrix, RTM, TM) https://www.ofnisystems.com/services/validation/traceability-matrix/
+[4] phaseform-conductor-blueprint.pdf https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/136588077/8f08253d-e3ea-4124-bcdd-a2f594844d5d/phaseform-conductor-blueprint.pdf
+[5] PhaseForm-Technical-Design-Document.docx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/136588077/ec851066-231d-444d-921a-d4489331bbea/PhaseForm-Technical-Design-Document.docx
+[6] Energy-aware Incremental OTA Update for Flash-based Batteryless IoT
+  Devices http://arxiv.org/pdf/2406.12189.pdf
+[7] Over-the-Air Firmware Updates for Constrained NB-IoT Devices https://www.mdpi.com/1424-8220/22/19/7572/pdf?version=1665316759
+[8] TEl-IoT: A Template for Eliciting IoT Software System Requirements https://dl.acm.org/doi/10.1145/3535511.3535538
+[9] Hardware, Software, and Wetware Codesign Environment for Synthetic Biology https://linkinghub.elsevier.com/retrieve/pii/S2693125724000694
+[10] The Use of DFMEA In Safety Critical Medical Device Software https://ieeexplore.ieee.org/document/11424470/
+[11] 76‐3: Flexible Graphene Pressure Sensor Array with Biomimetic Microstructure Distributed by Matrix Points https://sid.onlinelibrary.wiley.com/doi/10.1002/sdtp.18897
+[12] Template-Based Requirements Specification: A Case Study https://www.semanticscholar.org/paper/fce2dabfac79ff6ec7d9fbbab050760c3b3dc92c
+[13] Early Hardware / Software Integration Using SystemC 2 . 0 https://www.semanticscholar.org/paper/1204d91ac6aae6eb5d049a7a5fab3116bf3c27f7
+[14] A Comparative Template for Reliable Requirement Specification http://www.ijcaonline.org/volume14/number2/pxc3872361.pdf
+[15] USING THE NUMERICAL METHOD TO CONTROL OF PARAMETERS OF RADIATION PATTERNS AT AUTOMATED ANTENNA DESIGN https://nkss_eng.pnzgu.ru/nikss10125
+[16] A Vertically Integrated Framework for Templatized Chip Design https://arxiv.org/abs/2512.10155
+[17] Prompting LLM for Embedded SRS Generation: A Case Study of Elder Care System https://ieeexplore.ieee.org/document/11190276/
+[18] Digital requirements engineering with an INCOSE-derived SysML meta-model https://arxiv.org/pdf/2401.16330.pdf
+[19] A Secure Web-Based File Exchange Server: Software Requirements
+  Specification Document http://arxiv.org/pdf/1101.4632.pdf
+[20] Object-Oriented Requirements: a Unified Framework for Specifications,
+  Scenarios and Tests http://arxiv.org/pdf/2209.02189.pdf
+[21] Towards a new template for the specification of requirements in semi-structured natural language https://sol.sbc.org.br/journals/index.php/jserd/article/download/473/545
+[22] Software Requirements Specification - Softbody Simulation System https://arxiv.org/pdf/1305.4378.pdf
+[23] Bridging MoCs in SystemC Specifications of Heterogeneous Systems https://repositorio.unican.es/xmlui/bitstream/10902/530/1/Bridging%20MoCs.pdf
+[24] Refinement-Based Specification: Requirements and Architecture https://arxiv.org/pdf/1404.7260.pdf
+[25] Towards a Reference Model of Software Resources Quality http://thescipub.com/pdf/10.3844/jcssp.2018.182.198
+[26] WO2023205662A2 - Reconfigurable intelligent surfaces and methods https://patents.google.com/patent/WO2023205662A2/en
+[27] [PDF] NUREG/CR-6834 "Circuit Analysis - Failure Mode and Likelihood ... https://www.nrc.gov/docs/ML0327/ML032731464.pdf
+[28] [XLS] Requirements Traceability Matrix (RTM) https://ussm.gsa.gov/assets/files/M3-Playbook-Requirements-Traceability-Matrix-Template.xlsx
+[29] Transparent and flexible conductors made by additive processes https://patents.google.com/patent/US11217358B2/en
+[30] Understanding the Role of Sensor Optimisation in Complex Systems https://pmc.ncbi.nlm.nih.gov/articles/PMC10534378/
+[31] Self-contained reconfigurable personal laboratory - Google Patents https://patents.google.com/patent/US20170363678A1/en
+[32] [PDF] Failure Modes and Effects Analysis (FMEA) https://ntrs.nasa.gov/api/citations/20000070720/downloads/20000070720.pdf
