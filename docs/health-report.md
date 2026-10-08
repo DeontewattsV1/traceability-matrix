@@ -16,7 +16,7 @@
 
 ## Last Commit
 
-a0f5c58 — docs: add Cubic review workflow
+a0f5c58 — historical review-documentation commit (superseded; see Git history)
 
 ## Maintenance Checklist
 
