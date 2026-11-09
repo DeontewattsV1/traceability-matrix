@@ -1,10 +1,15 @@
 name: Publication PASS Gate
 
+# Posts a commit status from the same retained-surface audit as
+# full-history-secret-audit.yml. See that file for why this no longer calls
+# the AGI-CP reusable workflow.
+
 on:
   workflow_dispatch:
+  pull_request:
   push:
-    paths:
-      - .github/workflows/publication-pass-gate.yml
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -13,21 +18,71 @@ permissions:
   pull-requests: read
   statuses: write
 
+concurrency:
+  group: publication-pass-gate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   audit:
-    uses: DeontewattsV1/AGI-CP/.github/workflows/full-history-secret-audit-reusable.yml@74223bfe9f44408e2db62496b48b67bf531f7d1e
+    name: retained surfaces
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      status: ${{ steps.scan.outputs.status }}
+      detail: ${{ steps.scan.outputs.detail }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Scan history and retained external surfaces
+        id: scan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/full-history-secret-audit.sh
+
+      - name: Upload redacted audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-secret-audit-${{ github.run_id }}
+          path: .audit/safe/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 30
+
   publish-transition-status:
     needs: audit
-    if: always()
+    if: always() && needs.audit.result != 'cancelled'
     runs-on: ubuntu-latest
     steps:
-      - shell: bash
+      - name: Publish commit status
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           AUDIT_RESULT: ${{ needs.audit.result }}
+          AUDIT_DETAIL: ${{ needs.audit.outputs.detail }}
         run: |
           set -euo pipefail
           context='publication-gate/full-history-secret-audit'
-          if [ "$AUDIT_RESULT" = 'success' ]; then state='success'; description='PASS: full-history secret audit completed cleanly'; else state='failure'; description='BLOCKED: audit failed, incomplete, or found secrets'; fi
-          gh api --method POST -H 'Accept: application/vnd.github+json' "repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" -f state="$state" -f context="$context" -f description="$description"
+          if [ "$AUDIT_RESULT" = 'success' ]; then
+            state='success'
+            description="${AUDIT_DETAIL:-PASS: no secrets in retained surfaces}"
+          else
+            state='failure'
+            description="${AUDIT_DETAIL:-BLOCKED: secrets found or a retained surface could not be scanned}"
+          fi
+          description="$(printf '%s' "$description" | tr '\n' ' ' | cut -c1-140)"
+          sha="$GITHUB_SHA"
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            sha="${{ github.event.pull_request.head.sha }}"
+          fi
+          gh api --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            "repos/${GITHUB_REPOSITORY}/statuses/${sha}" \
+            -f state="$state" \
+            -f context="$context" \
+            -f description="$description"
           [ "$state" = 'success' ]
