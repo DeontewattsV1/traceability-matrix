@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: '0 8 * * 1'
   workflow_dispatch:
+  pull_request:
 
 permissions:
   contents: write
@@ -72,6 +73,7 @@ jobs:
           echo "today=${TODAY}" >> "$GITHUB_OUTPUT"
 
       - name: Commit report if changed
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           set -euo pipefail
